@@ -2,9 +2,11 @@ use std::fs::File;
 use std::io;
 use std::io::BufRead;
 use std::path::Path;
+mod day_2;
 
 fn main() {
-    day_1()
+    day_1();
+    day_2::day_2();
 }
 
 fn day_1() {
@@ -39,9 +41,6 @@ fn day_1() {
     println!("Day 1 Part 2 result: {}", count_increased);
 }
 
-fn day_2() {
-
-}
 
 fn read_lines<P>(filename: P) -> io::Result<io::Lines<io::BufReader<File>>>
     where P: AsRef<Path>, {
