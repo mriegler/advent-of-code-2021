@@ -21,7 +21,26 @@ fn day_1() {
         }
     }
 
-    println!("result: {}", count_increased)
+    println!("Day 1 Part 1 result: {}", count_increased);
+
+    // part 2
+    let windowed_numbers: Vec<u32> = numbers
+        .windows(3)
+        .map(|w| w.iter().sum())
+        .collect();
+
+    count_increased = 0;
+    for pair in windowed_numbers.windows(2) {
+        if pair[0] < pair[1] {
+            count_increased += 1;
+        }
+    }
+
+    println!("Day 1 Part 2 result: {}", count_increased);
+}
+
+fn day_2() {
+
 }
 
 fn read_lines<P>(filename: P) -> io::Result<io::Lines<io::BufReader<File>>>
