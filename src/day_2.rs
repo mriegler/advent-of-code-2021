@@ -26,9 +26,12 @@ impl FromStr for SubMovement {
 }
 
 pub fn day_2() {
-    let thing: Vec<usize> = super::read_lines("./day_2_input.txt").ok().unwrap()
+    let movements : Vec<SubMovement> = super::read_lines("./day_2_input.txt").ok().unwrap()
         .filter_map(|line| line.ok())
         .filter_map(|line| line.parse::<SubMovement>().ok())
+        .collect();
+    let mut coords: Vec<usize> = movements
+        .iter()
         .fold(vec![0, 0], |mut coords, movement| {
             match movement {
                 SubMovement::Forward(num) => coords[0] += num,
@@ -39,7 +42,30 @@ pub fn day_2() {
             coords
         });
 
-    println!("Day 2 Part 1: {:?}", thing[0] * thing[1]);
+    println!("Day 2 Part 1: {:?}", coords[0] * coords[1]);
 
     // Part 2
+    coords = movements
+        .iter()
+        .fold(vec![0, 0, 0], |mut coords, movement| {
+        match movement {
+            SubMovement::Forward(num) => {
+                coords[0] += num;
+                coords[1] += num * coords[2]
+            }
+            SubMovement::Backward(num) => {
+                coords[0] -= num;
+                coords[1] -= num * coords[2]
+            }
+            SubMovement::Down(num) => {
+                coords[2] += num;
+            }
+            SubMovement::Up(num) => {
+                coords[2] -= num;
+            }
+        }
+        coords
+    });
+
+    println!("Day 2 Part 2: {:?}", coords[0] * coords[1]);
 }
