@@ -3,14 +3,17 @@ use std::io;
 use std::io::BufRead;
 use std::path::Path;
 mod day_2;
+mod util;
+mod day_3;
 
 fn main() {
     day_1();
     day_2::day_2();
+    day_3::part_1();
 }
 
 fn day_1() {
-    let numbers: Vec<u32> = read_lines("./day_1_input.txt").ok().unwrap()
+    let numbers: Vec<u32> = util::read_lines("./day_1_input.txt").ok().unwrap()
         .filter_map(|s| s.ok())
         .filter_map(|s| s.parse::<u32>().ok())
         .collect();
@@ -39,11 +42,4 @@ fn day_1() {
     }
 
     println!("Day 1 Part 2 result: {}", count_increased);
-}
-
-
-fn read_lines<P>(filename: P) -> io::Result<io::Lines<io::BufReader<File>>>
-    where P: AsRef<Path>, {
-    let file = File::open(filename)?;
-    Ok(io::BufReader::new(file).lines())
 }

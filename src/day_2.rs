@@ -1,6 +1,7 @@
 use std::io::{Error, ErrorKind};
 use std::num::ParseIntError;
 use std::str::FromStr;
+use crate::util;
 
 pub enum SubMovement {
     Forward(usize),
@@ -26,7 +27,7 @@ impl FromStr for SubMovement {
 }
 
 pub fn day_2() {
-    let movements : Vec<SubMovement> = super::read_lines("./day_2_input.txt").ok().unwrap()
+    let movements : Vec<SubMovement> = util::read_lines("./day_2_input.txt").ok().unwrap()
         .filter_map(|line| line.ok())
         .filter_map(|line| line.parse::<SubMovement>().ok())
         .collect();
