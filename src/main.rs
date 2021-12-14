@@ -9,7 +9,7 @@ mod day_3;
 fn main() {
     day_1();
     day_2::day_2();
-    day_3::part_1();
+    day_3::execute();
 }
 
 fn day_1() {
