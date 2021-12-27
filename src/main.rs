@@ -5,11 +5,13 @@ use std::path::Path;
 mod day_2;
 mod util;
 mod day_3;
+mod day_4;
 
 fn main() {
     day_1();
     day_2::day_2();
     day_3::execute();
+    day_4::execute_part_1();
 }
 
 fn day_1() {
