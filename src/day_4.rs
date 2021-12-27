@@ -10,7 +10,7 @@ struct BingoState {
 }
 
 impl BingoState {
-    fn pick_all(&mut self) -> u32 {
+    fn find_first_winner(&mut self) -> u32 {
         let len_picks = self.number_picks.len();
         for idx in 0..len_picks {
             let num = self.number_picks[idx];
@@ -21,19 +21,41 @@ impl BingoState {
         
         panic!("found no winning board")
     }
-    fn check_number(&mut self, num: u32) -> Option<u32> {
-        for board in &mut self.boards {
-            if board.check_number(num) {
-                return Some(board.get_unmarked_sum() * num);
+    fn find_last_winner(&mut self) -> u32 {
+        let mut last_result = 0;
+        let mut boards_left = self.boards.len();
+        let len_picks = self.number_picks.len();
+        for idx in 0..len_picks {
+            let num = self.number_picks[idx];
+            if let Some(res) = self.check_number(num) {
+                boards_left -= 1;
+                println!("Boards left {}, num {}, res {}", boards_left, num, res);
+                if res > 0 {
+                    last_result = res;
+                }
             }
         }
         
-        None
+        last_result
+    }
+    fn check_number(&mut self, num: u32) -> Option<u32> {
+        let mut first_res = None;
+        for board in &mut self.boards {
+            if !board.solved && board.check_number(num) {
+                println!("Num {}, unmarked {}", num, board.get_unmarked_sum() * num);
+                if first_res == None {
+                    first_res = Some(board.get_unmarked_sum() * num)
+                }
+            }
+        }
+        
+        first_res
     }
 }
 
 #[derive(Debug, Default)]
 struct Board {
+    solved: bool,
     numbers: Vec<u32>,
     selected_numbers: Vec<bool>
 }
@@ -46,6 +68,7 @@ impl Board {
                 let x = idx as u32 % BOARD_DIMENSIONS;
                 let y = idx as u32 / BOARD_DIMENSIONS;
                 if self.check_bingo(x, y) {
+                    self.solved = true;
                     return true
                 }
             }
@@ -95,7 +118,7 @@ impl Board {
         let mut board = Board::default();
         board.numbers = nums;
         board.selected_numbers = vec![false; board.numbers.len()];
-
+        
         board
     }
 }
@@ -103,29 +126,35 @@ impl Board {
 fn read_from_file(file_name: &str) -> BingoState {
     let mut state = BingoState::default();
     let lines: Vec<String> = read_lines(file_name)
-        .expect("couldn't read file")
-        .filter_map(|x| x.ok())
-        .collect();
+    .expect("couldn't read file")
+    .filter_map(|x| x.ok())
+    .collect();
     let picks: Vec<u32> = lines[0].split(",").filter_map(|n| n.parse::<u32>().ok()).collect();
-
+    
     state.number_picks = picks;
-
+    
     state.boards = lines[1..].chunks((BOARD_DIMENSIONS + 1) as usize)
     .map(|chunk| {
         let numbers = chunk[1..].iter().flat_map(|s| s.split(" "))
         .filter_map(|s| s.parse::<u32>().ok())
         .collect();
-
+        
         Board::for_numbers(numbers)
     })
     .collect();
-
-
+    
+    
     state
 }
 
 pub fn execute_part_1() {
-   let mut state = read_from_file("./day_4_input.txt");
-
-   println!("Day 4 Part 1: {}", state.pick_all());
+    let mut state = read_from_file("./day_4_input.txt");
+    
+    println!("Day 4 Part 1: {}", state.find_first_winner());
+    
+    // Part 2
+    let mut state2 = read_from_file("./day_4_input.txt");
+    
+    println!("Day 4 Part 2: {}", state2.find_last_winner());
+    
 }
